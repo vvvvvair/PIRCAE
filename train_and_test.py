@@ -78,13 +78,13 @@ def data_loader():
                                                shuffle=True,
                                                num_workers=8,
                                                collate_fn=train_data_set.collate_fn,
-                                               )#drop_last=True最后一个不完整的batch_size丢弃
+                                               )
     train_ints_loader = torch.utils.data.DataLoader(train_intsdata_set,
                                                batch_size=batch_size,
                                                shuffle=True,
                                                num_workers=8,
                                                collate_fn=train_intsdata_set.collate_fn,
-                                               )#drop_last=True最后一个不完整的batch_size丢弃
+                                               )
     val_data_loader = torch.utils.data.DataLoader(val_data_set,
                                              batch_size=batch_size,
                                              shuffle=True,
@@ -177,11 +177,7 @@ def train():
         val_labels_numpy = val_labels_numpy.numpy().ravel()
         
         
-                
-       
-        #lr交叉验证评估部分
-        #lr = LogisticRegression(max_iter = 10000,random_state=0,penalty = 'l1',C=0.8 ,solver = 'liblinear',class_weight={0:0.2,1:0.8})
-        #lr = LogisticRegression(max_iter = 10000,random_state=0,class_weight={0:0.18,1:0.82})
+        
         lr = LogisticRegression(max_iter = 10000,random_state=0,class_weight={0:0.25,1:0.75})
 
         strKFolad = StratifiedKFold(n_splits=10,shuffle=False)
@@ -239,7 +235,7 @@ def test():
             else:
                 encoder_feature_numpy = torch.cat((encoder_feature_numpy,encoder),dim=0)
                 labels_numpy = torch.cat((labels_numpy,labels),dim = 0)
-                #把训练集集的也去一份出来
+               
         for step,(images,labels) in  enumerate(train_data_loader):
             
             encoder,decoder = model_ae(images.to(device))
@@ -260,9 +256,6 @@ def test():
         
                 
        
-        #lr交叉验证评估部分
-        #lr = LogisticRegression(max_iter = 10000,random_state=0,penalty = 'l1',C=0.8 ,solver = 'liblinear',class_weight={0:0.2,1:0.8})
-        #lr = LogisticRegression(max_iter = 10000,random_state=0,class_weight={0:0.18,1:0.82})
         lr = LogisticRegression(max_iter = 10000,random_state=0,class_weight={0:0.25,1:0.75})
 
         strKFolad = StratifiedKFold(n_splits=10,shuffle=False)
@@ -297,15 +290,11 @@ def test():
     
 
 if __name__=="__main__":
-    torch.manual_seed(3)
-    torch.cuda.manual_seed_all(3)
     root = "../Data/MedlatTrainingData_png_48x48"  
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = True
     train_data_loader, val_data_loader, test_data_pulsar_loader,test_data_loader = data_loader()
     print("using {} device.".format(device))
     train()
-    test()
+    #test()
 
     
